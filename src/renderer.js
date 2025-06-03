@@ -37,10 +37,26 @@ async function loadPageContent(pageName) {
 
         const pageHtml = await window.electronAPI.renderTemplate(`pages/${pageName}.ejs`);
         mainContentContainer.innerHTML = pageHtml;
+
+        setActiveMenuItem(pageName);
+
     } catch (error) {
         console.error(`Failed to load page ${pageName}:`, error);
         mainContentContainer.innerHTML = '<h1>Failed to load page.</h1>';
     }
+}
+
+window.loadPageContent = loadPageContent;
+
+function setActiveMenuItem(pageName) {
+    const allLinks = document.querySelectorAll('#sidebar-container nav ul li a');
+    allLinks.forEach(link => {
+        if (link.dataset.page === pageName) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
 }
 
 async function loadHeader(pageTitle = 'Page') {
@@ -86,7 +102,7 @@ function addMenuListeners() {
 document.addEventListener('DOMContentLoaded', async () => {
     await loadMenu();
     await loadPageContent('home');
-    await loadFooter();
+    // await loadFooter();
 
     
     if (window.electronAPI && typeof window.electronAPI.onMenuDemoAction === 'function') {

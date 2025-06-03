@@ -1,11 +1,9 @@
-<link rel="stylesheet" href="/src/assets/style.css">
-
 <h1><%= pageMessage %></h1> <%# Използваме данните, подадени от main.js %>
 <p>Това е началната страница, рендирана с EJS. <br>Годината е <%= currentYear %>.<br>Това приложение се казва <strong><%= appName %></strong>.</p>
 
 <h1>Created Chatbots</h1>
 <% if (bots && bots.length > 0) { %>
-    <ul>
+    <ul class="bot-cards">
         <% bots.forEach(function(bot){ %>
             <li class="bot-card">
                 <% if (bot.image) { %>
@@ -20,6 +18,10 @@
 
             </li>
         <% }); %>
+        <li class="bot-card create-new" onclick="loadPageContent('create_bot')">
+            <div class="plus-icon">+</div>
+            <h2>New bot</h2>
+        </li>
     </ul>
 <% } else { %>
     <p>There are not bots created yet.</p>

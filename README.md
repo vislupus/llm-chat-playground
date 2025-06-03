@@ -1,2 +1,2 @@
-# llm-chat
+# llm-chat-playground
 simple llm chat

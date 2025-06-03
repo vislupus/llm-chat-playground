@@ -3,8 +3,9 @@ html {
 	margin: 0;
 	padding: 0;
 	font-family: sans-serif;
-	height: 100dvh;
-	/* overflow: hidden; */
+	min-height: 100dvh;
+    overflow-x: hidden;
+	overflow-y: auto;
 }
 
 body {
@@ -15,31 +16,49 @@ body {
 	padding: 0 !important;
 }
 
-#app-header-container,
-#app-footer-container {
+#app-header-container {
+  background-color: cornflowerblue;
+  color: white;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+#app-header-content {
+  margin: 5px auto;
+  line-height: 1.2;
+}
+
+#app-header-content h1 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+#app-header-content p {
+  margin: 5px 0 0;
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+/* #app-footer-container {
 	flex-shrink: 0;
 	background-color: cornflowerblue;
 	color: white;
-	/* padding: 15px 20px; */
+	padding: 15px 20px;
 	text-align: center;
 	margin-top: auto;
-}
+} */
 
 .app-container {
 	display: flex;
 	flex-grow: 1;
-	height: 100dvh;
-	/* overflow: hidden; */
 }
 
 .sidebar {
 	width: 200px;
 	background-color: #f0f0f0;
 	padding: 20px;
-	height: 100dvh;
 	box-sizing: border-box;
 	border-right: 1px solid #ccc;
-	/* overflow-y: auto; */
 	flex-shrink: 0;
 }
 
@@ -73,9 +92,17 @@ body {
 .main-content {
 	flex-grow: 1;
 	padding: 20px;
-	height: 100%;
 	box-sizing: border-box;
-	/* overflow-y: auto; */
+}
+
+
+.bot-cards {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
 .bot-card {
@@ -87,6 +114,7 @@ body {
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   text-align: center;
   transition: box-shadow 0.3s ease;
+  width: 30%; 
   max-width: 200px;
   display: inline-block;
   vertical-align: top;
@@ -108,4 +136,26 @@ body {
 .bot-card > h2 {
   margin: 0;
   font-size: 1.2em;
+}
+
+.bot-card.create-new {
+  cursor: pointer;
+  border: 2px dashed #ccc;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.bot-card.create-new:hover {
+  background-color: #eee;
+  border-color: #999;
+}
+
+.bot-card.create-new .plus-icon {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #999;
 }

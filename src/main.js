@@ -58,7 +58,7 @@ const database = {
   bots: [
     { id: 1, name: 'Hikari', image: '/assets/ComfyUI_01079_.png', gender: "female" },
     { id: 2, name: 'Maria', image: '/assets/ComfyUI_01427_.png', gender: "female" },
-    { id: 3, name: 'Georgi', image: '/assets/ComfyUI_01427_.png', gender: "male" },
+    { id: 3, name: 'Georgi', image: '/assets/ComfyUI_02167_.png', gender: "male" },
   ],
 
   getPageSpecificData: function(pageName) {
@@ -82,6 +82,19 @@ ipcMain.handle('render-template', async (event, relativeTemplatePath, customData
     const templateContent = fs.readFileSync(correctTemplatePath, 'utf-8');
 
     let dataForEjs = { ...customData };
+
+    let selectedBot = null;
+    if (customData.botId) {
+      selectedBot = database.bots.find(b => b.id == customData.botId);
+    }
+
+    if (!selectedBot && database.bots.length > 0) {
+      selectedBot = database.bots[0];
+    }
+
+    if (selectedBot) {
+      dataForEjs.selectedBot = selectedBot;
+    }
 
     if (relativeTemplatePath.startsWith('pages/')) {
       const pageNameForData = relativeTemplatePath.substring(6, relativeTemplatePath.lastIndexOf('.ejs'));

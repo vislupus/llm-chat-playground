@@ -20,7 +20,7 @@ async function loadMenu() {
     }
 }
 
-async function loadPageContent(pageName) {
+async function loadPageContent(pageName, customData = {}) {
     try {
         const pageTitles = {
             home: 'Home',
@@ -35,7 +35,8 @@ async function loadPageContent(pageName) {
         document.title = currentPageTitle;
         await loadHeader(currentPageTitle);
 
-        const pageHtml = await window.electronAPI.renderTemplate(`pages/${pageName}.ejs`);
+        const pageHtml = await window.electronAPI.renderTemplate(`pages/${pageName}.ejs`, customData);
+
         mainContentContainer.innerHTML = pageHtml;
 
         setActiveMenuItem(pageName);
@@ -116,3 +117,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.warn('window.electronAPI.onMenuDemoAction is not defined. Preload the script to load correctly?');
     }
 });
+
+
+window.openBotChat = async function(botId) {
+  try {
+    await loadPageContent('chats', { botId });
+  } catch (error) {
+    console.error('Failed to open bot chat:', error);
+  }
+};

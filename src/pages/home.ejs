@@ -5,7 +5,7 @@
 <% if (bots && bots.length > 0) { %>
     <ul class="bot-cards">
         <% bots.forEach(function(bot){ %>
-            <li class="bot-card">
+            <li class="bot-card" onclick="openBotChat('<%= bot.id %>')">
                 <% if (bot.image) { %>
                     <img class="bot-image" src="<%= bot.image %>" alt="Picture of <%= bot.name %>" width="100">
                 <% } %>

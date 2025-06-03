@@ -9,7 +9,9 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "lint": "echo \"No linting configured\"",
+    "dev": "electron .",
+    "build": "vite build && electron .vite/build/main.js"
   },
   "keywords": [],
   "author": {
@@ -31,6 +33,7 @@
     "vite": "^5.4.19"
   },
   "dependencies": {
+    "ejs": "^3.1.10",
     "electron-squirrel-startup": "^1.0.1"
   }
 }

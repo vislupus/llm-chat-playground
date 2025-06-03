@@ -1,0 +1,26 @@
+<link rel="stylesheet" href="/src/assets/style.css">
+
+<h1><%= pageMessage %></h1> <%# Използваме данните, подадени от main.js %>
+<p>Това е началната страница, рендирана с EJS. <br>Годината е <%= currentYear %>.<br>Това приложение се казва <strong><%= appName %></strong>.</p>
+
+<h1>Created Chatbots</h1>
+<% if (bots && bots.length > 0) { %>
+    <ul>
+        <% bots.forEach(function(bot){ %>
+            <li class="bot-card">
+                <% if (bot.image) { %>
+                    <img class="bot-image" src="<%= bot.image %>" alt="Picture of <%= bot.name %>" width="100">
+                <% } %>
+
+                <% if (bot.gender == "male") { %>
+                    <h2 style="color: rgb(97, 170, 238);"><%= bot.name %></h2>
+                <% } else { %>
+                    <h2 style="color: rgb(238, 97, 97);"><%= bot.name %></h2>
+                <% } %>
+
+            </li>
+        <% }); %>
+    </ul>
+<% } else { %>
+    <p>There are not bots created yet.</p>
+<% } %>

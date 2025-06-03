@@ -1,41 +1,46 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu, ipcMain } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
+import fs   from 'node:fs';
+import ejs  from 'ejs';
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
 
+let mainWindow;
+
 const createWindow = () => {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+  mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 900,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false 
     },
   });
 
-  // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+    // mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.on('before-input-event', (event, input) => {
+      if (input.control && input.key.toLowerCase() === 'r') {
+        event.preventDefault();
+        mainWindow.reload();
+      }
+    });
+  }
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
 
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -43,14 +48,64 @@ app.whenReady().then(() => {
   });
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+const database = {
+  bots: [
+    { id: 1, name: 'Hikari', image: '/assets/ComfyUI_01079_.png', gender: "female" },
+    { id: 2, name: 'Maria', image: '/assets/ComfyUI_01427_.png', gender: "female" },
+    { id: 3, name: 'Georgi', image: '/assets/ComfyUI_01427_.png', gender: "male" },
+  ],
+
+  getPageSpecificData: function(pageName) {
+    switch (pageName) {
+      case 'home':
+        return { pageMessage: 'Title message', bots: this.bots };
+      default:
+        return {};
+    }
+  }
+};
+
+ipcMain.handle('render-template', async (event, relativeTemplatePath, customData = {}) => {
+  try {
+    const correctTemplatePath = path.join(__dirname, '..', '..', 'src', relativeTemplatePath);
+
+    if (!fs.existsSync(correctTemplatePath)) {
+      console.error(`Template not found: ${correctTemplatePath} (requested: ${relativeTemplatePath})`);
+      throw new Error(`Template not found: ${relativeTemplatePath}`);
+    }
+    const templateContent = fs.readFileSync(correctTemplatePath, 'utf-8');
+
+    let dataForEjs = { ...customData };
+
+    if (relativeTemplatePath.startsWith('pages/')) {
+      const pageNameForData = relativeTemplatePath.substring(6, relativeTemplatePath.lastIndexOf('.ejs'));
+      // console.log('[main.js] Determined pageNameForData:', pageNameForData);
+
+      if (pageNameForData) {
+        const pageSpecificData = database.getPageSpecificData(pageNameForData);
+        // console.log('[main.js] pageSpecificData for ' + pageNameForData + ':', pageSpecificData);
+
+        if (pageSpecificData) {
+          dataForEjs = { ...dataForEjs, ...pageSpecificData };
+        }
+      }
+    }
+
+    dataForEjs.appName = "My chatbot app";
+    dataForEjs.currentYear = new Date().getFullYear();
+
+    // console.log(`[main.js] Rendering ${relativeTemplatePath} with final dataForEjs:`, dataForEjs);
+
+    const html = ejs.render(templateContent, dataForEjs);
+    return html;
+  } catch (error) {
+    console.error(`Failed to render template ${relativeTemplatePath}:`, error);
+    throw error;
+  }
+});

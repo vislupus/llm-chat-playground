@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Hello World!</title>
-
-  </head>
-  <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot-playground</title>
+    <link rel="stylesheet" href="/src/assets/style.css">
+</head>
+<body>
+    <div id="app-header-container"></div>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar-container"></aside>
+        <main class="main-content" id="main-content-container"></main>
+    </div>
+    <div id="app-footer-container"></div>
     <script type="module" src="/src/renderer.js"></script>
-  </body>
+</body>
 </html>

@@ -1,2 +1,9 @@
-// See the Electron documentation for details on how to use preload scripts:
-// https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  renderTemplate: (templatePath, data = {}) => ipcRenderer.invoke('render-template', templatePath, data),
+
+  onMenuDemoAction: (callback) => {
+    ipcRenderer.on('menu-demo-action', (event, message) => callback(message));
+  }
+});
